@@ -8,7 +8,7 @@ import os
 from PIL import ImageTk
 from utils import resize_image_to_pil
 
-from dataloader import DataLoader
+from data_loader import DataLoader
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--path', type=str, help='file path')
