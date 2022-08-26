@@ -1,4 +1,3 @@
-from cgitb import text
 from tkinter import *
 from tkinter import messagebox
 
@@ -27,8 +26,11 @@ text_button_frame = Frame(window)
 image_label.grid(row=0, column=0, sticky="nsew")
 text_button_frame.grid(row=0, column=1, sticky="nsew")
 
+path_label = Label(text_button_frame)
+path_label.grid(row=0, column=0, sticky="nsew")
+
 textbox = Entry(text_button_frame, width=50)
-textbox.grid(row=0, column=0, sticky="nsew")
+textbox.grid(row=1, column=0, sticky="nsew")
 
 def update(mode):
     curr_image_path = data_loader.curr_image_path
@@ -46,6 +48,7 @@ def update(mode):
 
     else:
         global image
+        path_label.config(text=image_path)
         image = ImageTk.PhotoImage(resize_image_to_pil(image_path))
         image_label.config(image=image)
 
@@ -69,13 +72,15 @@ def delete_image_label():
     
     data_loader.reload_files()
 
+    if data_loader.idx >= len(data_loader.files):
+        data_loader.idx = len(data_loader.files)-2
     update("next")
 
 button_frame = Frame(text_button_frame)
 prev_button = Button(button_frame, text="이전", width=30, height=5, command=partial(update, "prev"))
 next_button = Button(button_frame, text="다음", width=30, height=5, command=partial(update, "next"))
 delete_button = Button(button_frame, text="삭제", width=30, height=5, command=delete_image_label)
-button_frame.grid(row=1, column=0, sticky="nsew")
+button_frame.grid(row=2, column=0, sticky="nsew")
 prev_button.grid(row=0, column=0, sticky="nsew")
 next_button.grid(row=1, column=0, sticky="nsew")
 delete_button.grid(row=2, column=0, sticky="nsew")
@@ -84,7 +89,8 @@ window.rowconfigure(0, weight=1)
 window.columnconfigure(0, weight=3, minsize=640)
 window.columnconfigure(1, weight=1)
 text_button_frame.rowconfigure(0, weight=1)
-text_button_frame.rowconfigure(1, weight=1)
+text_button_frame.rowconfigure(1, weight=2)
+text_button_frame.rowconfigure(2, weight=2)
 text_button_frame.columnconfigure(0, weight=1)
 button_frame.rowconfigure(0, weight=1)
 button_frame.rowconfigure(1, weight=1)

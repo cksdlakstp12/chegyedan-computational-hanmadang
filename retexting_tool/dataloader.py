@@ -11,7 +11,7 @@ class DataLoader():
 
     def load_next_image_path_label(self):
         self.idx += 1
-        if not self.idx < len(self.files) - 1:
+        if not self.idx <= len(self.files) - 1:
             self.idx = len(self.files) - 1
             return None, None
 
