@@ -2,15 +2,20 @@ from cgitb import text
 from tkinter import *
 from tkinter import messagebox
 
+from functools import partial
+import argparse
 import os
 
 from PIL import ImageTk
-from functools import partial
-
 from utils import resize_image_to_pil
+
 from dataloader import DataLoader
 
-data_path = "D:\\dalle\\geumson\\*.jpg"
+parser = argparse.ArgumentParser()
+parser.add_argument('--path', type=str, help='file path')
+args = parser.parse_args()
+
+data_path = os.path.join(args.path, "*.jpg")
 data_loader = DataLoader(data_path)
 
 window=Tk()
