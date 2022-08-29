@@ -65,16 +65,22 @@ def delete_image_label():
     if answer == "no":
         return
 
-    curr_image_path = data_loader.curr_image_path
-    curr_text_path = curr_image_path.replace('jpg', 'txt')
-    os.remove(curr_image_path)
-    os.remove(curr_text_path)
+    image_path, text = data_loader.delete_image_path_label()
     
-    data_loader.reload_files()
+    global image
+    curr_image_path = data_loader.get_curr_image_path()
+    path_label.config(text=image_path)
+    image = ImageTk.PhotoImage(resize_image_to_pil(image_path))
+    image_label.config(image=image)
 
-    if data_loader.idx >= len(data_loader.files):
-        data_loader.idx = len(data_loader.files)-2
-    update("next")
+    try:
+        with open(curr_image_path.replace("jpg", "txt"), 'w') as f:
+            f.write(textbox.get())
+    except Exception as e:
+        pass
+    
+    textbox.delete(0, 'end')
+    textbox.insert(END, text)
 
 button_frame = Frame(text_button_frame)
 prev_button = Button(button_frame, text="이전", width=30, height=5, command=partial(update, "prev"))

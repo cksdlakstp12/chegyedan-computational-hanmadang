@@ -1,5 +1,6 @@
 import glob
 import cv2
+import os
 
 
 class DataLoader():
@@ -35,5 +36,22 @@ class DataLoader():
             
             return self.curr_image_path, text
     
-    def reload_files(self):
-        self.files = glob.glob(self.path)
+    def get_curr_image_path(self):
+        return self.curr_image_path
+
+    def delete_image_path_label(self):
+        curr_image_path = self.files[self.idx]
+        os.remove(curr_image_path)
+        os.remove(curr_image_path.replace("jpg", "txt"))
+
+        if self.idx == len(self.files) - 1:
+            self.files = self.files[:self.idx]
+            self.idx -= 1
+        else:
+            self.files = self.files[:self.idx]+self.files[self.idx+1:]
+            
+        self.curr_image_path = self.files[self.idx]
+        with open(self.curr_image_path.replace("jpg", "txt"), 'r') as f:
+                text = f.readline()
+
+        return self.curr_image_path, text
