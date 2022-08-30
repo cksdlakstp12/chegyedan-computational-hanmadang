@@ -10,6 +10,7 @@ from utils import resize_image_to_pil
 
 from data_loader import DataLoader
 
+key = 0
 parser = argparse.ArgumentParser()
 parser.add_argument('--path', type=str, help='file path')
 args = parser.parse_args()
@@ -65,26 +66,29 @@ def delete_image_label():
     if answer == "no":
         return
 
-    image_path, text = data_loader.delete_image_path_label()
+    curr_image_path = data_loader.curr_image_path
+    curr_text_path = curr_image_path.replace('jpg', 'txt')
+    os.remove(curr_image_path)
+    os.remove(curr_text_path)
     
-    global image
-    curr_image_path = data_loader.get_curr_image_path()
-    path_label.config(text=image_path)
-    image = ImageTk.PhotoImage(resize_image_to_pil(image_path))
-    image_label.config(image=image)
+    data_loader.reload_files()
 
-    try:
-        with open(curr_image_path.replace("jpg", "txt"), 'w') as f:
-            f.write(textbox.get())
-    except Exception as e:
-        pass
-    
-    textbox.delete(0, 'end')
-    textbox.insert(END, text)
+    if data_loader.idx >= len(data_loader.files):
+        data_loader.idx = len(data_loader.files)-2
+    update("next")
+
+def KeyClick(e):
+    global Key
+    key = e.keysym
+    if key == "Left":
+        update("prev")
+    if key == "Right":
+        update("next")
 
 button_frame = Frame(text_button_frame)
 prev_button = Button(button_frame, text="이전", width=30, height=5, command=partial(update, "prev"))
 next_button = Button(button_frame, text="다음", width=30, height=5, command=partial(update, "next"))
+window.bind("<Key>", KeyClick)
 delete_button = Button(button_frame, text="삭제", width=30, height=5, command=delete_image_label)
 button_frame.grid(row=2, column=0, sticky="nsew")
 prev_button.grid(row=0, column=0, sticky="nsew")
